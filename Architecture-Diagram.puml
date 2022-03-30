@@ -1,0 +1,27 @@
+@startuml
+
+actor User
+
+node "User's Computer" as PC {
+	[Browser] as browser
+}
+
+node "Github Server" as WS {
+	[HTTP Server] as http
+}
+
+node "Front End Layer" as FE {
+	[HTML] as html
+	[CSS] as css
+}
+
+node "Simulation Logic Layer" as LG {
+	[TypeScript] as ts
+}
+
+User --> PC
+browser --> http
+http --> FE
+FE --> LG
+
+@enduml

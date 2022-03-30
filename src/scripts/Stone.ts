@@ -1,0 +1,3 @@
+class Stone extends Particle {
+
+}
