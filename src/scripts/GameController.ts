@@ -16,8 +16,24 @@ class GameController {
     }
 
     private tick(): void {
+        // main game loop
+    }
+
+    private handleUserClick(): void {
+        // if clicked on game area
+        this.currentTool.execute(this.sim);
+    }
+
+    private changeTool(): void {
 
     }
 
+    private reset(): void {
+
+    }
+
+    private pause(): void {
+
+    }
 
 }
