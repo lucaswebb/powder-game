@@ -1,3 +1,3 @@
 class Dirt extends Particle {
-    
+
 }
