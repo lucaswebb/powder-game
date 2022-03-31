@@ -13,4 +13,8 @@ class Eraser extends Tool {
 
         return Eraser.instance;
     }
+
+    public execute(x: number, y: number, sim: Simulator) {
+
+    }
 }

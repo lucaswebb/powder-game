@@ -1,0 +1,3 @@
+class Lava extends Particle {
+
+}

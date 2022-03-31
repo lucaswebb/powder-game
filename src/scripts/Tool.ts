@@ -4,7 +4,7 @@ abstract class Tool {
 
     }
 
-    public execute(sim: Simulator): void {
+    public execute(x: number, y: number, sim: Simulator): void {
 
     }
 

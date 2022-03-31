@@ -1,6 +1,8 @@
 class GameView {
 
-    public Render(): void {
+    
+
+    public Render(sim: Simulator): void {
 
     }
 }
