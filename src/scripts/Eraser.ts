@@ -1,3 +1,5 @@
+///<reference path="./Tool.ts" />
+
 class Eraser extends Tool {
     private static instance: Eraser;
 

@@ -1,3 +1,5 @@
+///<reference path="./Tool.ts" />
+
 class Placer extends Tool {
     private static type: ParticleType;
     private static instance: Placer;

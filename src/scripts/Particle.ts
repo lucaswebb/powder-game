@@ -7,8 +7,10 @@ abstract class Particle {
     public mass: number;
 
     constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
         this.vx = 0;
-        this.vy = 0;
+        this.vy = 1;
     }
 
     applyForce(x: number, y: number): void {

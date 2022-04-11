@@ -1,3 +1,7 @@
-class Stone extends Particle {
+///<reference path="./Particle.ts" />
 
+class Stone extends Particle {
+    constructor(x: number, y: number) {
+        super(x, y);
+    }
 }

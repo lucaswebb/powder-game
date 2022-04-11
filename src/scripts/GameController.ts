@@ -1,15 +1,17 @@
 const FPS = 24;
 
 class GameController {
-    private x_size: number;
-    private y_size: number;
+    private size: Vec2D;
     private paused: boolean;
     private sim: Simulator;
     private view: GameView;
     private currentTool: Tool;
     private tickInterval: number;
 
-    constructor(x: number, y: number, ) {
+    constructor(size: Vec2D, canvas: HTMLCanvasElement) {
+        this.size = size;
+        this.view = new GameView(canvas);
+        this.sim = new Simulator();
 
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
@@ -17,7 +19,15 @@ class GameController {
 
     private tick(): void {
         // main game loop
+        // check if mouse is currently being clicked and handle that
 
+        // if game is not paused, update the current pixel array using Simulator
+        if (!this.paused) {
+            this.sim.updateParticles();
+        }
+
+        // pass the current pixel array to GameView to be rendered every tick
+        this.view.renderParticles(this.sim.particles);
     }
 
     private handleUserClick(): void {
