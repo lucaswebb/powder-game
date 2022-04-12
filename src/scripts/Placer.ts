@@ -6,10 +6,11 @@ class Placer extends Tool {
 
     private constructor() {
         super();
-        Placer.instance = new Placer();
+        
     }
 
     public static getInstance(): Placer {
+        Placer.instance = new Placer();
         return Placer.instance;
     }
 

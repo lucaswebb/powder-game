@@ -76,12 +76,47 @@ var Eraser = /** @class */ (function (_super) {
     };
     return Eraser;
 }(Tool));
+///<reference path="./Tool.ts" />
+var Explosion = /** @class */ (function (_super) {
+    __extends(Explosion, _super);
+    function Explosion() {
+        return _super.call(this) || this;
+    }
+    Explosion.getInstance = function () {
+        if (!Explosion.instance) {
+            Explosion.instance = new Explosion();
+        }
+        return Explosion.instance;
+    };
+    Explosion.prototype.execute = function (x, y, sim) {
+    };
+    return Explosion;
+}(Tool));
 var FPS = 24;
 var GameController = /** @class */ (function () {
     function GameController(size, canvas) {
         this.size = size;
         this.view = new GameView(canvas);
         this.sim = new Simulator();
+        var f = this.changeTool;
+        var particleList = document.getElementsByClassName("particle");
+        var _loop_1 = function (i) {
+            particleList[i].addEventListener("click", function () {
+                f("particle", particleList[i].innerHTML);
+            });
+        };
+        for (var i = 0; i < particleList.length; i++) {
+            _loop_1(i);
+        }
+        var toolList = document.getElementsByClassName("tool");
+        var _loop_2 = function (i) {
+            toolList[i].addEventListener("click", function () {
+                f("tool", toolList[i].innerHTML);
+            });
+        };
+        for (var i = 0; i < toolList.length; i++) {
+            _loop_2(i);
+        }
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
     }
@@ -99,7 +134,24 @@ var GameController = /** @class */ (function () {
         // if clicked on game area
         //this.currentTool.execute(this.sim);
     };
-    GameController.prototype.changeTool = function () {
+    GameController.prototype.changeTool = function (tip, name) {
+        var num = null;
+        switch (tip) {
+            case "particle":
+                num = ParticleType[name];
+                var newPlacer = Placer.getInstance();
+                var particleType = ParticleType[name];
+                Placer.setType(particleType);
+                this.currentTool = newPlacer;
+                console.log(this.currentTool);
+                break;
+            case "tool":
+                num = ToolType[name];
+                console.log(ToolType[num]);
+                break;
+            default:
+                console.log("unknown tool");
+        }
     };
     GameController.prototype.reset = function () {
     };
@@ -165,11 +217,10 @@ var ParticleType;
 var Placer = /** @class */ (function (_super) {
     __extends(Placer, _super);
     function Placer() {
-        var _this = _super.call(this) || this;
-        Placer.instance = new Placer();
-        return _this;
+        return _super.call(this) || this;
     }
     Placer.getInstance = function () {
+        Placer.instance = new Placer();
         return Placer.instance;
     };
     Placer.setType = function (type) {
@@ -223,6 +274,11 @@ var Stone = /** @class */ (function (_super) {
     }
     return Stone;
 }(Particle));
+var ToolType;
+(function (ToolType) {
+    ToolType[ToolType["Eraser"] = 0] = "Eraser";
+    ToolType[ToolType["Explosion"] = 1] = "Explosion";
+})(ToolType || (ToolType = {}));
 ///<reference path="./Particle.ts" />
 var Water = /** @class */ (function (_super) {
     __extends(Water, _super);

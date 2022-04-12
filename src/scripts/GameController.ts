@@ -12,6 +12,20 @@ class GameController {
         this.size = size;
         this.view = new GameView(canvas);
         this.sim = new Simulator();
+        let f = this.changeTool;
+        let particleList = document.getElementsByClassName("particle");
+        for (let i = 0; i < particleList.length; i++){
+            particleList[i].addEventListener("click", function() {
+                f("particle", particleList[i].innerHTML);
+            });
+        }
+
+        let toolList = document.getElementsByClassName("tool");
+        for (let i = 0; i < toolList.length; i++){
+            toolList[i].addEventListener("click", function() {
+                f("tool", toolList[i].innerHTML);
+            });
+        }
 
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
@@ -35,9 +49,27 @@ class GameController {
         //this.currentTool.execute(this.sim);
     }
 
-    private changeTool(): void {
-
+    public changeTool(tip: string, name: string): void {
+        var num: number = null;
+        switch(tip){
+            case "particle": 
+                num = ParticleType[name];
+                let newPlacer = Placer.getInstance();
+                var particleType = ParticleType[name];
+                Placer.setType(particleType);
+                this.currentTool = newPlacer;
+                console.log(this.currentTool);
+                break;
+            case "tool": 
+                num = ToolType[name];
+                console.log(ToolType[num]);
+                break;
+            default:
+                console.log("unknown tool");
+        }
     }
+
+
 
     private reset(): void {
 
