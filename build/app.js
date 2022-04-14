@@ -117,6 +117,11 @@ var GameController = /** @class */ (function () {
         for (var i = 0; i < toolList.length; i++) {
             _loop_2(i);
         }
+        var gameMap = document.getElementById("canvasContainer");
+        var gameMapiFrame = gameMap.children[0];
+        console.log(gameMapiFrame);
+        console.log("test");
+        gameMapiFrame.onclick = this.handleUserClick;
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
     }
@@ -131,8 +136,30 @@ var GameController = /** @class */ (function () {
         this.view.renderParticles(this.sim.particles);
     };
     GameController.prototype.handleUserClick = function () {
+        var mouseFlag;
         // if clicked on game area
         //this.currentTool.execute(this.sim);
+        // console.log("Anthony you pretty cool");
+        var timer;
+        var gameCanvas = document.getElementById("canvasContainer");
+        var gameMap = gameCanvas.children[0];
+        function mousedown(e) {
+            gameMap.addEventListener("mousemove", mousemove);
+        }
+        function mousemove(e) {
+            // timer = setInterval( function () {
+            //     console.log(e.clientX, e.clientY);
+            // }, 5000);
+            console.log(e.clientX, e.clientY);
+            // gameMap.addEventListener("mouseup", mouseup, false);
+        }
+        function mouseup(e) {
+            console.log("called");
+            // clearInterval(timer);
+            gameMap.removeEventListener("mousemove", mousemove);
+        }
+        gameMap.addEventListener("mousedown", mousedown);
+        gameMap.addEventListener("mouseup", mouseup);
     };
     GameController.prototype.changeTool = function (tip, name) {
         var num = null;
@@ -141,7 +168,7 @@ var GameController = /** @class */ (function () {
                 num = ParticleType[name];
                 var newPlacer = Placer.getInstance();
                 var particleType = ParticleType[name];
-                Placer.setType(particleType);
+                Placer.setType(ParticleType[name]);
                 this.currentTool = newPlacer;
                 console.log(this.currentTool);
                 break;
