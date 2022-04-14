@@ -10,7 +10,7 @@ abstract class Particle {
         this.x = x;
         this.y = y;
         this.vx = 0;
-        this.vy = 1;
+        this.vy = 0;
     }
 
     applyForce(x: number, y: number): void {
