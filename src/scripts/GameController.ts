@@ -10,8 +10,8 @@ class GameController {
 
     constructor(size: Vec2D, canvas: HTMLCanvasElement) {
         this.size = size;
-        this.view = new GameView(canvas);
-        this.sim = new Simulator();
+        this.view = new GameView(size, canvas);
+        this.sim = new Simulator(size);
         let f = this.changeTool;
         let particleList = document.getElementsByClassName("particle");
         for (let i = 0; i < particleList.length; i++){
@@ -51,7 +51,7 @@ class GameController {
         }
 
         // pass the current pixel array to GameView to be rendered every tick
-        this.view.renderParticles(this.sim.particles);
+        this.view.renderParticles(this.sim.particles, this.sim.walls);
     }
 
     private handleUserClick(): void {
