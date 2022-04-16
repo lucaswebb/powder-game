@@ -5,6 +5,7 @@ abstract class Particle {
     public vy: number;
     public color: Color;
     public mass: number;
+    public density: number; // used to determine if particles pass through each other, stone sinks in water
 
     constructor(x: number, y: number) {
         this.x = x;
