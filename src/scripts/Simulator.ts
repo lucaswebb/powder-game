@@ -46,9 +46,11 @@ class Simulator implements Iterator<Particle> {
         }
 
 
-        for (let i = 0; i < 100; i++) {
-            this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
-        }
+        // for (let i = 0; i < 100; i++) {
+        //     this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
+        // }
+
+        this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
     }
 
     // Used the following as a significant reference point
@@ -115,8 +117,10 @@ class Simulator implements Iterator<Particle> {
 
             }
 
+            console.log(p.vy, fin_y);
+
             if(!this.doMove(p, fin_x, fin_y)) {
-                p.vx = 0;
+                //p.vx = 0;
                 p.vy = 0;
             }
 
@@ -171,9 +175,10 @@ class Simulator implements Iterator<Particle> {
         // }
     }
 
-    public addParticles(toAdd: Particle): void {
-        this.particle_map[toAdd.x][toAdd.y] = toAdd;
-
+    public addParticles(x: number, y: number, type: ParticleType): void {
+        var toAdd = ParticleFactory.getNewParticle(x, y, type);
+        this.particle_map[x][y] = toAdd;
+        this.particles.push(toAdd);
     }
 
     public eraseParticles(toEraseX: number[], toEraseY: number[]): void {

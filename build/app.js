@@ -46,8 +46,8 @@ var C4 = /** @class */ (function (_super) {
 }(Particle));
 var Color;
 (function (Color) {
-    Color["Tan"] = "f5c242";
-    Color["Gray"] = "7a7777";
+    Color["Tan"] = "#f5c242";
+    Color["Gray"] = "#7a7777";
 })(Color || (Color = {}));
 ///<reference path="./Particle.ts" />
 var Dirt = /** @class */ (function (_super) {
@@ -89,58 +89,51 @@ var Eraser = /** @class */ (function (_super) {
     };
     return Eraser;
 }(Tool));
-///<reference path="./Tool.ts" />
-var Explosion = /** @class */ (function (_super) {
-    __extends(Explosion, _super);
-    function Explosion() {
-        return _super.call(this) || this;
-    }
-    Explosion.getInstance = function () {
-        if (!Explosion.instance) {
-            Explosion.instance = new Explosion();
-        }
-        return Explosion.instance;
-    };
-    Explosion.prototype.execute = function (x, y, sim) {
-    };
-    Explosion.prototype.toString = function () {
-        return "Explosion";
-    };
-    return Explosion;
-}(Tool));
 var FPS = 24;
 var GameController = /** @class */ (function () {
     function GameController(size, canvas) {
         var _this = this;
-        this.handleUserClick = function () {
-            var mouseFlag;
-            var thing;
-            // if clicked on game area
-            // this.currentTool.execute(this.sim);
-            var timer;
-            _this.toolIsSet = (_this.currentTool != undefined);
-            var gameCanvas = document.getElementById("canvasContainer");
-            var gameMap = gameCanvas.children[0];
-            var mousedown = function (e) {
-                _this.currX = e.clientX;
-                _this.currY = e.clientY;
-                mouseFlag = true;
-                // console.log(this.currentTool.toString());
-                gameMap.addEventListener("mousemove", mousemove);
-                timer = setInterval(_this.spawnParticles.bind(_this), 500);
-            };
-            var mousemove = function (e) {
-                _this.currX = e.clientX;
-                _this.currY = e.clientY;
-                // gameMap.addEventListener("mouseup", mouseup, false);
-            };
-            var mouseup = function (e) {
-                clearInterval(timer);
-                gameMap.removeEventListener("mousemove", mousemove);
-            };
-            gameMap.addEventListener("mousedown", mousedown);
-            gameMap.addEventListener("mouseup", mouseup);
-        };
+        this.isMouseDown = false;
+        // private handleUserClick = () => {
+        //     var mouseFlag;
+        //     var thing;
+        //     // if clicked on game area
+        //     // this.currentTool.execute(this.sim);
+        //     let timer;
+        //     this.toolIsSet = (this.currentTool != undefined)
+        //
+        //     let gameCanvas = document.getElementById("canvasContainer");
+        //     let gameMap = gameCanvas.children[0] as HTMLElement;
+        //
+        //     let mousedown = (e) => {
+        //         this.currX = e.clientX;
+        //         this.currY = e.clientY;
+        //         mouseFlag = true;
+        //         // console.log(this.currentTool.toString());
+        //
+        //         gameMap.addEventListener("mousemove", mousemove);
+        //
+        //         timer = setInterval(this.spawnParticles.bind(this), 500);
+        //     }
+        //
+        //
+        //
+        //
+        //     let mousemove = (e) => {
+        //         this.currX = e.clientX;
+        //         this.currY = e.clientY;
+        //         // gameMap.addEventListener("mouseup", mouseup, false);
+        //     }
+        //
+        //     let mouseup = (e) => {
+        //
+        //         clearInterval(timer);
+        //         gameMap.removeEventListener("mousemove", mousemove);
+        //     }
+        //     gameMap.addEventListener("mousedown", mousedown);
+        //     gameMap.addEventListener("mouseup", mouseup);
+        //
+        // }
         this.changeTool = function (tip, name) {
             switch (tip) {
                 case "particle":
@@ -160,62 +153,66 @@ var GameController = /** @class */ (function () {
         this.size = size;
         this.view = new GameView(size, canvas);
         this.sim = new Simulator(size);
-<<<<<<< HEAD
         // this.currentTool = Placer.getInstance();
         // this.currentTool = Placer.getInstance();
         // Placer.setType(ParticleType["Stone"]);
-=======
->>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
-        var f = this.changeTool;
-        var particleList = document.getElementsByClassName("particle");
-        var _loop_1 = function (i) {
-            particleList[i].addEventListener("click", function () {
-                f("particle", particleList[i].innerHTML);
-            });
-        };
-        for (var i = 0; i < particleList.length; i++) {
-            _loop_1(i);
-        }
-        var toolList = document.getElementsByClassName("tool");
-        var _loop_2 = function (i) {
-            toolList[i].addEventListener("click", function () {
-                f("tool", toolList[i].innerHTML);
-            });
-        };
-        for (var i = 0; i < toolList.length; i++) {
-            _loop_2(i);
-        }
-        var gameMap = document.getElementById("canvasContainer");
-        var gameMapiFrame = gameMap.children[0];
-<<<<<<< HEAD
-=======
-        console.log(gameMapiFrame);
-        console.log("test");
->>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
-        gameMapiFrame.onclick = this.handleUserClick;
+        // let f = this.changeTool;
+        // let particleList = document.getElementsByClassName("particle");
+        // for (let i = 0; i < particleList.length; i++){
+        //     particleList[i].addEventListener("click", function() {
+        //         f("particle", particleList[i].innerHTML);
+        //     });
+        //     // particleList[i].addEventListener("click",
+        //     //     this.changeTool.bind("particle", particleList[i].innerHTML)
+        //     // );
+        //
+        // }
+        //
+        // let toolList = document.getElementsByClassName("tool");
+        // for (let i = 0; i < toolList.length; i++){
+        //     toolList[i].addEventListener("click", function() {
+        //         f("tool", toolList[i].innerHTML);
+        //     });
+        // }
+        //
+        // let gameMap = document.getElementById("canvasContainer");
+        // let gameMapiFrame = gameMap.children[0] as HTMLElement;
+        //
+        // gameMapiFrame.onclick= this.handleUserClick;
+        canvas.addEventListener("mousedown", function (event) {
+            _this.mouseEvent = event;
+            _this.isMouseDown = event.button === 0;
+        });
+        document.addEventListener("mouseup", function () {
+            _this.isMouseDown = false;
+        });
+        canvas.addEventListener("mousemove", function (event) {
+            _this.mouseEvent = event;
+        });
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
     }
     // private getTool(): Tool {
     //     return this.currentTool;
     // }
-    GameController.prototype.spawnParticles = function () {
-        console.log(this.currX, this.currY);
-        console.log(this.currentTool);
-        if (this.toolIsSet) {
-            if (this.currentTool instanceof Placer) {
-                this.currentParticle = ParticleFactory.getNewParticle(this.currX, this.currY, Placer.getType());
-            }
-            console.log(this.currentParticle);
-            this.sim.addParticles(this.currentParticle);
-            this.view.renderParticles(this.sim.particles, this.sim.walls);
-            // console.log(e.clientX, e.clientY);
-            // console.log(this.currentTool.toString());
-        }
-        else {
-            console.log("no tool dummy");
-        }
-    };
+    // private spawnParticles(): void{
+    //     console.log(this.currX, this.currY);
+    //     console.log(this.currentTool);
+    //     if(this.toolIsSet){
+    //         if(this.currentTool instanceof Placer){
+    //             this.currentParticle = ParticleFactory.getNewParticle(this.currX, this.currY, Placer.getType())
+    //         }
+    //         console.log(this.currentParticle);
+    //         this.sim.addParticles(this.currentParticle);
+    //         //this.view.renderParticles(this.sim.particles, this.sim.walls);
+    //
+    //         // console.log(e.clientX, e.clientY);
+    //         // console.log(this.currentTool.toString());
+    //     }
+    //     else{
+    //         console.log("no tool dummy")
+    //     }
+    // }
     GameController.prototype.tick = function () {
         // main game loop
         // check if mouse is currently being clicked and handle that
@@ -223,56 +220,12 @@ var GameController = /** @class */ (function () {
         if (!this.paused) {
             this.sim.updateParticles();
         }
+        if (this.isMouseDown) {
+            this.sim.addParticles(Math.floor(this.mouseEvent.offsetX), this.size.y - Math.floor(this.mouseEvent.offsetY), ParticleType.Stone);
+        }
         // pass the current pixel array to GameView to be rendered every tick
         this.view.renderParticles(this.sim.particles, this.sim.walls);
     };
-<<<<<<< HEAD
-=======
-    GameController.prototype.handleUserClick = function () {
-        var mouseFlag;
-        // if clicked on game area
-        //this.currentTool.execute(this.sim);
-        // console.log("Anthony you pretty cool");
-        var timer;
-        var gameCanvas = document.getElementById("canvasContainer");
-        var gameMap = gameCanvas.children[0];
-        function mousedown(e) {
-            console.log(e.clientX, e.clientY);
-            // mouseFlag 
-            gameMap.addEventListener("mousemove", mousemove);
-        }
-        function mousemove(e) {
-            console.log(e.clientX, e.clientY);
-            // gameMap.addEventListener("mouseup", mouseup, false);
-        }
-        function mouseup(e) {
-            console.log("called");
-            // clearInterval(timer);
-            gameMap.removeEventListener("mousemove", mousemove);
-        }
-        gameMap.addEventListener("mousedown", mousedown);
-        gameMap.addEventListener("mouseup", mouseup);
-    };
-    GameController.prototype.changeTool = function (tip, name) {
-        var num = null;
-        switch (tip) {
-            case "particle":
-                num = ParticleType[name];
-                var newPlacer = Placer.getInstance();
-                var particleType = ParticleType[name];
-                Placer.setType(ParticleType[name]);
-                this.currentTool = newPlacer;
-                console.log(this.currentTool);
-                break;
-            case "tool":
-                num = ToolType[name];
-                console.log(ToolType[num]);
-                break;
-            default:
-                console.log("unknown tool");
-        }
-    };
->>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
     GameController.prototype.reset = function () {
     };
     GameController.prototype.pause = function () {
@@ -415,9 +368,10 @@ var Simulator = /** @class */ (function () {
             this.wall_map[size.x - 1][y] = temp_wall;
             this.walls.push(temp_wall);
         }
-        for (var i = 0; i < 100; i++) {
-            this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
-        }
+        // for (let i = 0; i < 100; i++) {
+        //     this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
+        // }
+        this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
     }
     // Used the following as a significant reference point
     // https://github.com/The-Powder-Toy/The-Powder-Toy
@@ -434,27 +388,6 @@ var Simulator = /** @class */ (function () {
             }
             // now try to move the particle in the direction of its velocity
             // interpolate to check for anything in the way
-<<<<<<< HEAD
-            var max_veloc = Math.max(Math.abs(p.vx), Math.abs(p.vy));
-            var interp_step = 2;
-        }
-    };
-    // 1, can move
-    // 0, can't move
-    Simulator.prototype.eval_move = function (p, new_x, new_y) {
-        // check for other particles at new location
-        if (this.particle_map[new_x][new_y] != null) {
-            // now compare weights
-            // TODO
-            // for now particles just bounce off each other
-            return 0;
-        }
-        // Check for walls
-        if (this.wall_map[new_x][new_y] == null) {
-            return 1;
-        }
-        else {
-=======
             // scale our steps by the max component of velocity to limit our max error
             var max_veloc = Math.max(Math.abs(p.vx), Math.abs(p.vy));
             // stepsize that specifies the resolution of the interpolation
@@ -491,8 +424,9 @@ var Simulator = /** @class */ (function () {
                     break;
                 }
             }
+            console.log(p.vy, fin_y);
             if (!this.doMove(p, fin_x, fin_y)) {
-                p.vx = 0;
+                //p.vx = 0;
                 p.vy = 0;
             }
         }
@@ -507,7 +441,6 @@ var Simulator = /** @class */ (function () {
             // TODO
             // for now particles just bounce off each other
             // if p is denser than the particle at new_x, new_y, then swap locations
->>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
             return 0;
         }
         // Check for walls
@@ -543,10 +476,10 @@ var Simulator = /** @class */ (function () {
         //
         // }
     };
-    Simulator.prototype.addParticles = function (toAdd) {
-        var x = toAdd.x;
-        var y = toAdd.y;
+    Simulator.prototype.addParticles = function (x, y, type) {
+        var toAdd = ParticleFactory.getNewParticle(x, y, type);
         this.particle_map[x][y] = toAdd;
+        this.particles.push(toAdd);
     };
     Simulator.prototype.eraseParticles = function (toEraseX, toEraseY) {
     };
@@ -573,29 +506,12 @@ var Stone = /** @class */ (function (_super) {
     };
     return Stone;
 }(Particle));
-// import { Placer } from "./Placer";
-// import { Simulator } from "./Simulator";
-// import { Tool } from "./Tool";
-var ToolTip = /** @class */ (function (_super) {
-    __extends(ToolTip, _super);
-    function ToolTip() {
-        return _super.call(this) || this;
+///<reference path="./Particle.ts" />
+var Water = /** @class */ (function (_super) {
+    __extends(Water, _super);
+    function Water() {
+        return _super !== null && _super.apply(this, arguments) || this;
     }
-<<<<<<< HEAD
-    ToolTip.getInstance = function () {
-        ToolTip.instance = new ToolTip();
-        return ToolTip.instance;
-    };
-    ToolTip.setType = function (type) {
-        this.type = type;
-    };
-    ToolTip.prototype.execute = function (x, y, sim) {
-    };
-    ToolTip.prototype.toString = function () {
-        return ToolType[ToolTip.type];
-    };
-    return ToolTip;
-=======
     return Water;
 }(Particle));
 ///<reference path="./Tool.ts" />
@@ -612,8 +528,10 @@ var Explosion = /** @class */ (function (_super) {
     };
     Explosion.prototype.execute = function (x, y, sim) {
     };
+    Explosion.prototype.toString = function () {
+        return "Explosion";
+    };
     return Explosion;
->>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
 }(Tool));
 var ToolType;
 (function (ToolType) {
@@ -628,12 +546,26 @@ var Wall = /** @class */ (function () {
     }
     return Wall;
 }());
-///<reference path="./Particle.ts" />
-var Water = /** @class */ (function (_super) {
-    __extends(Water, _super);
-    function Water() {
-        return _super !== null && _super.apply(this, arguments) || this;
+// import { Placer } from "./Placer";
+// import { Simulator } from "./Simulator";
+// import { Tool } from "./Tool";
+var ToolTip = /** @class */ (function (_super) {
+    __extends(ToolTip, _super);
+    function ToolTip() {
+        return _super.call(this) || this;
     }
-    return Water;
-}(Particle));
+    ToolTip.getInstance = function () {
+        ToolTip.instance = new ToolTip();
+        return ToolTip.instance;
+    };
+    ToolTip.setType = function (type) {
+        this.type = type;
+    };
+    ToolTip.prototype.execute = function (x, y, sim) {
+    };
+    ToolTip.prototype.toString = function () {
+        return ToolType[ToolTip.type];
+    };
+    return ToolTip;
+}(Tool));
 //# sourceMappingURL=app.js.map
