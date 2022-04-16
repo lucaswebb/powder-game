@@ -1,3 +1,4 @@
 enum Color {
-    // add some basic default colors here
+    Tan = "#f5c242",
+    Gray = "#7a7777"
 }

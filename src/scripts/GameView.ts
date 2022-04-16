@@ -13,7 +13,7 @@ class GameView {
         this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
 
         for (let particle of particles) {
-            this.context.fillStyle = "red";
+            this.context.fillStyle = particle.color;
             this.context.fillRect(particle.x, this.HEIGHT - particle.y, 2, 2);
         }
 

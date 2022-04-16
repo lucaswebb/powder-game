@@ -1,5 +1,8 @@
 ///<reference path="./Tool.ts" />
 
+// import { Simulator } from "./Simulator";
+// import { Tool } from "./Tool";
+
 class Eraser extends Tool {
     private static instance: Eraser;
 
@@ -18,5 +21,9 @@ class Eraser extends Tool {
 
     public execute(x: number, y: number, sim: Simulator) {
 
+    }
+
+    public toString(): string {
+        return "Eraser";
     }
 }
