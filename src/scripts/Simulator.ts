@@ -171,7 +171,8 @@ class Simulator implements Iterator<Particle> {
         // }
     }
 
-    public addParticles(toAdd: Particle[][]): void {
+    public addParticles(toAdd: Particle): void {
+        this.particle_map[toAdd.x][toAdd.y] = toAdd;
 
     }
 

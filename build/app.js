@@ -160,9 +160,12 @@ var GameController = /** @class */ (function () {
         this.size = size;
         this.view = new GameView(size, canvas);
         this.sim = new Simulator(size);
+<<<<<<< HEAD
         // this.currentTool = Placer.getInstance();
         // this.currentTool = Placer.getInstance();
         // Placer.setType(ParticleType["Stone"]);
+=======
+>>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
         var f = this.changeTool;
         var particleList = document.getElementsByClassName("particle");
         var _loop_1 = function (i) {
@@ -184,6 +187,11 @@ var GameController = /** @class */ (function () {
         }
         var gameMap = document.getElementById("canvasContainer");
         var gameMapiFrame = gameMap.children[0];
+<<<<<<< HEAD
+=======
+        console.log(gameMapiFrame);
+        console.log("test");
+>>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
         gameMapiFrame.onclick = this.handleUserClick;
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000 / FPS);
@@ -218,6 +226,53 @@ var GameController = /** @class */ (function () {
         // pass the current pixel array to GameView to be rendered every tick
         this.view.renderParticles(this.sim.particles, this.sim.walls);
     };
+<<<<<<< HEAD
+=======
+    GameController.prototype.handleUserClick = function () {
+        var mouseFlag;
+        // if clicked on game area
+        //this.currentTool.execute(this.sim);
+        // console.log("Anthony you pretty cool");
+        var timer;
+        var gameCanvas = document.getElementById("canvasContainer");
+        var gameMap = gameCanvas.children[0];
+        function mousedown(e) {
+            console.log(e.clientX, e.clientY);
+            // mouseFlag 
+            gameMap.addEventListener("mousemove", mousemove);
+        }
+        function mousemove(e) {
+            console.log(e.clientX, e.clientY);
+            // gameMap.addEventListener("mouseup", mouseup, false);
+        }
+        function mouseup(e) {
+            console.log("called");
+            // clearInterval(timer);
+            gameMap.removeEventListener("mousemove", mousemove);
+        }
+        gameMap.addEventListener("mousedown", mousedown);
+        gameMap.addEventListener("mouseup", mouseup);
+    };
+    GameController.prototype.changeTool = function (tip, name) {
+        var num = null;
+        switch (tip) {
+            case "particle":
+                num = ParticleType[name];
+                var newPlacer = Placer.getInstance();
+                var particleType = ParticleType[name];
+                Placer.setType(ParticleType[name]);
+                this.currentTool = newPlacer;
+                console.log(this.currentTool);
+                break;
+            case "tool":
+                num = ToolType[name];
+                console.log(ToolType[num]);
+                break;
+            default:
+                console.log("unknown tool");
+        }
+    };
+>>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
     GameController.prototype.reset = function () {
     };
     GameController.prototype.pause = function () {
@@ -364,6 +419,8 @@ var Simulator = /** @class */ (function () {
             this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
         }
     }
+    // Used the following as a significant reference point
+    // https://github.com/The-Powder-Toy/The-Powder-Toy
     Simulator.prototype.updateParticles = function () {
         for (var _i = 0, _a = this.particles; _i < _a.length; _i++) {
             var p = _a[_i];
@@ -371,12 +428,13 @@ var Simulator = /** @class */ (function () {
             var y = p.y;
             // updates to velocity from gravity
             p.vy -= 0.5;
-            // if the particle is not moving, skip, code for movement is next
+            // if the particle is not moving, skip, code because movement is next
             if (p.vx == 0 && p.vy == 0) {
                 continue;
             }
             // now try to move the particle in the direction of its velocity
             // interpolate to check for anything in the way
+<<<<<<< HEAD
             var max_veloc = Math.max(Math.abs(p.vx), Math.abs(p.vy));
             var interp_step = 2;
         }
@@ -396,8 +454,94 @@ var Simulator = /** @class */ (function () {
             return 1;
         }
         else {
+=======
+            // scale our steps by the max component of velocity to limit our max error
+            var max_veloc = Math.max(Math.abs(p.vx), Math.abs(p.vy));
+            // stepsize that specifies the resolution of the interpolation
+            // 1 is perfect, 2 is half the amount of checks
+            var interp_step = 1;
+            // variables to store where we are going to try to move the particle to
+            // both an exact float representation and a rounded int
+            var fin_xf, fin_yf, fin_x, fin_y;
+            if (max_veloc < interp_step) {
+                fin_xf = x + p.vx;
+                fin_yf = y + p.vy;
+            }
+            // now step along the velocity vector
+            var dx = p.vx * interp_step / max_veloc;
+            var dy = p.vy * interp_step / max_veloc;
+            fin_xf = x;
+            fin_yf = y;
+            while (true) {
+                max_veloc -= interp_step;
+                fin_xf += dx;
+                fin_yf += dy;
+                fin_x = Math.round(fin_xf);
+                fin_y = Math.round(fin_yf);
+                // no obstacles found along velocity vector
+                if (max_veloc <= 0) {
+                    fin_xf = x + p.vx;
+                    fin_yf = y + p.vy;
+                    fin_x = Math.round(fin_xf);
+                    fin_y = Math.round(fin_yf);
+                    break;
+                }
+                // check for obstacles
+                if (this.evalMove(p, fin_x, fin_y) == 0) {
+                    break;
+                }
+            }
+            if (!this.doMove(p, fin_x, fin_y)) {
+                p.vx = 0;
+                p.vy = 0;
+            }
+        }
+    };
+    // 0, can't move
+    // 1, can move to unoccupied space
+    // 2, can move with swap
+    Simulator.prototype.evalMove = function (p, new_x, new_y) {
+        // check for other particles at new location
+        if (this.particle_map[new_x][new_y] != null) {
+            // now compare densities
+            // TODO
+            // for now particles just bounce off each other
+            // if p is denser than the particle at new_x, new_y, then swap locations
+>>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
             return 0;
         }
+        // Check for walls
+        if (this.wall_map[new_x][new_y] == null) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    };
+    Simulator.prototype.doMove = function (p, new_x, new_y) {
+        if (this.tryMove(p, new_x, new_y)) {
+            // only do this if we didn't swap!
+            // TODO
+            this.particle_map[p.x][p.y] = null;
+            p.x = new_x;
+            p.y = new_y;
+            this.particle_map[new_x][new_y] = p;
+            return true;
+        }
+        return false;
+    };
+    Simulator.prototype.tryMove = function (p, new_x, new_y) {
+        var e = this.evalMove(p, new_x, new_y);
+        if (e == 0) {
+            return false;
+        }
+        if (e == 1) {
+            return true;
+        }
+        // TODO
+        // if (e == 2){
+        //
+        // }
     };
     Simulator.prototype.addParticles = function (toAdd) {
         var x = toAdd.x;
@@ -437,6 +581,7 @@ var ToolTip = /** @class */ (function (_super) {
     function ToolTip() {
         return _super.call(this) || this;
     }
+<<<<<<< HEAD
     ToolTip.getInstance = function () {
         ToolTip.instance = new ToolTip();
         return ToolTip.instance;
@@ -450,6 +595,25 @@ var ToolTip = /** @class */ (function (_super) {
         return ToolType[ToolTip.type];
     };
     return ToolTip;
+=======
+    return Water;
+}(Particle));
+///<reference path="./Tool.ts" />
+var Explosion = /** @class */ (function (_super) {
+    __extends(Explosion, _super);
+    function Explosion() {
+        return _super.call(this) || this;
+    }
+    Explosion.getInstance = function () {
+        if (!Explosion.instance) {
+            Explosion.instance = new Explosion();
+        }
+        return Explosion.instance;
+    };
+    Explosion.prototype.execute = function (x, y, sim) {
+    };
+    return Explosion;
+>>>>>>> 8daeb1ed5b8e1d2de30f60c0af4c7f7874b13784
 }(Tool));
 var ToolType;
 (function (ToolType) {
