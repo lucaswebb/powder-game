@@ -1,5 +1,7 @@
 ///<reference path="./Tool.ts" />
 
+
+
 class Explosion extends Tool {
     private static instance: Explosion;
 
@@ -8,7 +10,7 @@ class Explosion extends Tool {
 
     }
 
-    public static getInstance(): Eraser {
+    public static getInstance(): Explosion {
         if (!Explosion.instance) {
             Explosion.instance = new Explosion();
         }
@@ -18,5 +20,9 @@ class Explosion extends Tool {
 
     public execute(x: number, y: number, sim: Simulator) {
 
+    }
+
+    public toString(): string {
+        return "Explosion";
     }
 }

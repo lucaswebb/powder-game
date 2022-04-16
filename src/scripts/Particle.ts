@@ -17,4 +17,8 @@ abstract class Particle {
     applyForce(x: number, y: number): void {
         // recalculate velocity
     }
+
+    public toString(): string {
+        return "Particle";
+    }
 }

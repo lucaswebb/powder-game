@@ -1,3 +1,6 @@
+// import { ParticleFactory } from "./ParticleFactory";
+// import { ParticleType } from "./ParticleType";
+
 class Simulator implements Iterator<Particle> {
     // Array of all particles
     public particles: Particle[];
@@ -168,7 +171,8 @@ class Simulator implements Iterator<Particle> {
         // }
     }
 
-    public addParticles(toAdd: Particle[][]): void {
+    public addParticles(toAdd: Particle): void {
+        this.particle_map[toAdd.x][toAdd.y] = toAdd;
 
     }
 
