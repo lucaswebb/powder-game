@@ -48,6 +48,9 @@ class Simulator implements Iterator<Particle> {
         }
     }
 
+    // Used the following as a significant reference point
+    // https://github.com/The-Powder-Toy/The-Powder-Toy
+
     public updateParticles(): void {
         for (var p of this.particles) {
             var x = p.x;
@@ -57,29 +60,76 @@ class Simulator implements Iterator<Particle> {
             p.vy -= 0.5;
 
 
-            // if the particle is not moving, skip, code for movement is next
+            // if the particle is not moving, skip, code because movement is next
             if (p.vx == 0 && p.vy == 0) {
                 continue;
             }
 
             // now try to move the particle in the direction of its velocity
             // interpolate to check for anything in the way
+            // scale our steps by the max component of velocity to limit our max error
             var max_veloc = Math.max(Math.abs(p.vx), Math.abs(p.vy));
 
-            let interp_step = 2;
+            // stepsize that specifies the resolution of the interpolation
+            // 1 is perfect, 2 is half the amount of checks
+            var interp_step = 1;
 
+            // variables to store where we are going to try to move the particle to
+            // both an exact float representation and a rounded int
+            var fin_xf, fin_yf, fin_x, fin_y;
+
+            if (max_veloc < interp_step) {
+                fin_xf = x + p.vx;
+                fin_yf = y + p.vy;
+            }
+
+            // now step along the velocity vector
+            var dx = p.vx * interp_step/max_veloc;
+            var dy = p.vy * interp_step/max_veloc;
+            fin_xf = x;
+            fin_yf = y;
+
+            while (true) {
+                max_veloc -= interp_step;
+                fin_xf += dx;
+                fin_yf += dy;
+                fin_x = Math.round(fin_xf);
+                fin_y = Math.round(fin_yf);
+
+                // no obstacles found along velocity vector
+                if (max_veloc <= 0) {
+                    fin_xf = x + p.vx;
+                    fin_yf = y + p.vy;
+                    fin_x = Math.round(fin_xf);
+                    fin_y = Math.round(fin_yf);
+                    break;
+                }
+
+                // check for obstacles
+                if (this.evalMove(p, fin_x, fin_y) == 0) {
+                    break;
+                }
+
+            }
+
+            if(!this.doMove(p, fin_x, fin_y)) {
+                p.vx = 0;
+                p.vy = 0;
+            }
 
         }
     }
 
-    // 1, can move
     // 0, can't move
-    private eval_move(p: Particle, new_x: number, new_y: number): number {
+    // 1, can move to unoccupied space
+    // 2, can move with swap
+    private evalMove(p: Particle, new_x: number, new_y: number): number {
         // check for other particles at new location
         if (this.particle_map[new_x][new_y] != null) {
-            // now compare weights
+            // now compare densities
             // TODO
             // for now particles just bounce off each other
+            // if p is denser than the particle at new_x, new_y, then swap locations
             return 0;
         }
 
@@ -89,6 +139,33 @@ class Simulator implements Iterator<Particle> {
         } else {
             return 0;
         }
+    }
+
+    private doMove(p: Particle, new_x: number, new_y: number):  boolean {
+        if (this.tryMove(p, new_x, new_y)) {
+            // only do this if we didn't swap!
+            // TODO
+            this.particle_map[p.x][p.y] = null;
+            p.x = new_x;
+            p.y = new_y;
+            this.particle_map[new_x][new_y] = p;
+            return true;
+        }
+        return false;
+    }
+
+    private tryMove(p: Particle, new_x: number, new_y: number): boolean {
+        var e = this.evalMove(p, new_x, new_y);
+        if (e == 0) {
+            return false;
+        }
+        if (e == 1) {
+            return true;
+        }
+        // TODO
+        // if (e == 2){
+        //
+        // }
     }
 
     public addParticles(toAdd: Particle[][]): void {
