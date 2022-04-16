@@ -50,7 +50,7 @@ class Simulator implements Iterator<Particle> {
         //     this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
         // }
 
-        this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
+        // this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
     }
 
     // Used the following as a significant reference point
@@ -86,44 +86,44 @@ class Simulator implements Iterator<Particle> {
             if (max_veloc < interp_step) {
                 fin_xf = x + p.vx;
                 fin_yf = y + p.vy;
-            }
-
-            // now step along the velocity vector
-            var dx = p.vx * interp_step/max_veloc;
-            var dy = p.vy * interp_step/max_veloc;
-            fin_xf = x;
-            fin_yf = y;
-
-            while (true) {
-                max_veloc -= interp_step;
-                fin_xf += dx;
-                fin_yf += dy;
                 fin_x = Math.round(fin_xf);
                 fin_y = Math.round(fin_yf);
+            } else {
+                // now step along the velocity vector
+                var dx = p.vx * interp_step/max_veloc;
+                var dy = p.vy * interp_step/max_veloc;
+                fin_xf = x;
+                fin_yf = y;
 
-                // no obstacles found along velocity vector
-                if (max_veloc <= 0) {
-                    fin_xf = x + p.vx;
-                    fin_yf = y + p.vy;
+                while (true) {
+                    max_veloc -= interp_step;
+                    fin_xf += dx;
+                    fin_yf += dy;
                     fin_x = Math.round(fin_xf);
                     fin_y = Math.round(fin_yf);
-                    break;
-                }
 
-                // check for obstacles
-                if (this.evalMove(p, fin_x, fin_y) == 0) {
-                    break;
-                }
+                    // no obstacles found along velocity vector
+                    if (max_veloc <= 0) {
+                        fin_xf = x + p.vx;
+                        fin_yf = y + p.vy;
+                        fin_x = Math.round(fin_xf);
+                        fin_y = Math.round(fin_yf);
+                        break;
+                    }
 
+                    // check for obstacles
+                    if (this.evalMove(p, fin_x, fin_y) == 0) {
+                        break;
+                    }
+                }
             }
 
-            console.log(p.vy, fin_y);
+            // console.log(p.vy, fin_y);
 
             if(!this.doMove(p, fin_x, fin_y)) {
                 //p.vx = 0;
-                p.vy = 0;
+                p.vy *= 0.5;
             }
-
         }
     }
 
@@ -149,6 +149,9 @@ class Simulator implements Iterator<Particle> {
     }
 
     private doMove(p: Particle, new_x: number, new_y: number):  boolean {
+        if (p.x == new_x && p.y == new_y) {
+            return true;
+        }
         if (this.tryMove(p, new_x, new_y)) {
             // only do this if we didn't swap!
             // TODO

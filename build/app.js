@@ -371,7 +371,7 @@ var Simulator = /** @class */ (function () {
         // for (let i = 0; i < 100; i++) {
         //     this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
         // }
-        this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
+        // this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
     }
     // Used the following as a significant reference point
     // https://github.com/The-Powder-Toy/The-Powder-Toy
@@ -399,35 +399,39 @@ var Simulator = /** @class */ (function () {
             if (max_veloc < interp_step) {
                 fin_xf = x + p.vx;
                 fin_yf = y + p.vy;
-            }
-            // now step along the velocity vector
-            var dx = p.vx * interp_step / max_veloc;
-            var dy = p.vy * interp_step / max_veloc;
-            fin_xf = x;
-            fin_yf = y;
-            while (true) {
-                max_veloc -= interp_step;
-                fin_xf += dx;
-                fin_yf += dy;
                 fin_x = Math.round(fin_xf);
                 fin_y = Math.round(fin_yf);
-                // no obstacles found along velocity vector
-                if (max_veloc <= 0) {
-                    fin_xf = x + p.vx;
-                    fin_yf = y + p.vy;
+            }
+            else {
+                // now step along the velocity vector
+                var dx = p.vx * interp_step / max_veloc;
+                var dy = p.vy * interp_step / max_veloc;
+                fin_xf = x;
+                fin_yf = y;
+                while (true) {
+                    max_veloc -= interp_step;
+                    fin_xf += dx;
+                    fin_yf += dy;
                     fin_x = Math.round(fin_xf);
                     fin_y = Math.round(fin_yf);
-                    break;
-                }
-                // check for obstacles
-                if (this.evalMove(p, fin_x, fin_y) == 0) {
-                    break;
+                    // no obstacles found along velocity vector
+                    if (max_veloc <= 0) {
+                        fin_xf = x + p.vx;
+                        fin_yf = y + p.vy;
+                        fin_x = Math.round(fin_xf);
+                        fin_y = Math.round(fin_yf);
+                        break;
+                    }
+                    // check for obstacles
+                    if (this.evalMove(p, fin_x, fin_y) == 0) {
+                        break;
+                    }
                 }
             }
-            console.log(p.vy, fin_y);
+            // console.log(p.vy, fin_y);
             if (!this.doMove(p, fin_x, fin_y)) {
                 //p.vx = 0;
-                p.vy = 0;
+                p.vy *= 0.5;
             }
         }
     };
@@ -452,6 +456,9 @@ var Simulator = /** @class */ (function () {
         }
     };
     Simulator.prototype.doMove = function (p, new_x, new_y) {
+        if (p.x == new_x && p.y == new_y) {
+            return true;
+        }
         if (this.tryMove(p, new_x, new_y)) {
             // only do this if we didn't swap!
             // TODO
