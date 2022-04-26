@@ -1,4 +1,5 @@
 enum ToolType {
     Eraser,
-    Explosion
+    Explosion,
+    Wall
 }

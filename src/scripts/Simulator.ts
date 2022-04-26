@@ -184,8 +184,53 @@ class Simulator implements Iterator<Particle> {
         this.particles.push(toAdd);
     }
 
-    public eraseParticles(toEraseX: number[], toEraseY: number[]): void {
+    public addWalls(x: number, y: number): void {
+        let sub_xvals = [x-1, x, x+1,
+                        x-1, x, x+1,
+                        x-1, x, x+1]
+        let sub_yvals = [y+1, y+1, y+1,
+                        y, y, y,
+                        y-1, y-1, y-1]
 
+        for(let i = 0; i < 9; i++){
+            var toAdd = new Wall(sub_xvals[i], sub_yvals[i], true);
+            this.wall_map[sub_xvals[i]][sub_yvals[i]] = toAdd;
+            this.walls.push(toAdd);
+        }
+
+        
+    }
+
+    
+
+    public eraseParticles(x: number ,y: number): void {
+        let sub_xvals = [x-1, x, x+1,
+                        x-1, x, x+1,
+                        x-1, x, x+1]
+        let sub_yvals = [y+1, y+1, y+1,
+                        y, y, y,
+                        y-1, y-1, y-1]
+
+        for(let i = 0; i < 9; i++){
+            
+            if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
+                if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
+                    let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
+                    const index = this.walls.indexOf(toErase, 0);
+                    this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
+                    this.walls[index].toErase = true;
+                }
+                
+            }
+            if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
+                let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
+                const index = this.particles.indexOf(toErase, 0);
+                this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
+                this.particles[index].toErase = true;
+                
+            }
+
+        }
     }
 
     hasNext(): boolean {

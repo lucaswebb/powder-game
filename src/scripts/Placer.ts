@@ -28,7 +28,8 @@ class Placer extends Tool {
     }
 
     public execute(x: number, y: number, sim: Simulator): void {
-        console.log(Placer.type);
+        // console.log(Placer.type);
+        sim.addParticles(x, y, Placer.getType());
     }
 
     public toString(): string {
