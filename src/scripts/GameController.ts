@@ -48,12 +48,12 @@ class GameController {
         pauseButton.addEventListener("click", () => {
             if (this.paused){
                 console.log("game unpause");
-                this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
+                // this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
                 this.paused = false;
             }
             else {
                 console.log("game pause");
-                clearInterval(this.tickInterval);
+                // clearInterval(this.tickInterval);
                 this.paused = true;
             }
         });
