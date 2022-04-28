@@ -231,10 +231,18 @@ class Simulator implements Iterator<Particle> {
 
         for(let i = 0; i < 25; i++){
             // make sure particle is there
-            if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
-                let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
-                const index = this.particles.indexOf(toErase, 0);
-                this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
+            // if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
+            //     let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
+            //     const index = this.particles.indexOf(toErase, 0);
+            //     this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
+            //     this.particles[index].toErase = true;
+            // }
+
+            let removeArray = this.particles.filter(p => p.x == sub_xvals[i] && p.y == sub_yvals[i]);
+
+            for (var p of removeArray){
+                const index = this.particles.indexOf(p);
+                this.particle_map[p.x][p.y] = null;
                 this.particles[index].toErase = true;
             }
 
@@ -256,16 +264,23 @@ class Simulator implements Iterator<Particle> {
 
         for(let i = 0; i < 25; i++){
             // make sure wall is there
-            if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
-                // check that wall is erasable
-                if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
-                    let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
-                    const index = this.walls.indexOf(toErase, 0);
-                    this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
-                    // some logic is breaking here
-                    this.walls[index].toErase = true;
-                }
+            // if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
+            //     // check that wall is erasable
+            //     if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
+            //         let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
+            //         const index = this.walls.indexOf(toErase, 0);
+            //         this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
+            //         // some logic is breaking here
+            //         this.walls[index].toErase = true;
+            //     }
                 
+            // }
+            let removeArray = this.walls.filter(w => w.x == sub_xvals[i] && w.y == sub_yvals[i]);
+
+            for (var w of removeArray){
+                const index = this.walls.indexOf(w);
+                this.wall_map[w.x][w.y] = null;
+                this.walls[index].toErase = true;
             }
             
 

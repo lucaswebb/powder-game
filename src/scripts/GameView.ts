@@ -14,8 +14,8 @@ class GameView {
         let retArr: Particle[] = particles.filter(p => p.toErase != true);
         for (let particle of retArr) {
             // if (!particle.toErase){
-                this.context.fillStyle = particle.color;
-                this.context.fillRect(particle.x, this.HEIGHT - particle.y, 2, 2);
+            this.context.fillStyle = particle.color;
+            this.context.fillRect(particle.x, this.HEIGHT - particle.y, 2, 2);
             // }
             // else{
             //     console.log("at least it's in here")
@@ -34,8 +34,8 @@ class GameView {
         let retArr: Wall[] = walls.filter(w => w.toErase != true);
         for (let wall of retArr) {
             // if (!wall.toErase){
-                this.context.fillStyle = Color.Brick;
-                this.context.fillRect(wall.x, this.HEIGHT - wall.y, 3, 3);
+            this.context.fillStyle = Color.Brick;
+            this.context.fillRect(wall.x, this.HEIGHT - wall.y, 3, 3);
             // }
             // else{
             //     console.log("at least it's in here")
