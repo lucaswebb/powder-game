@@ -20,7 +20,9 @@ class Eraser extends Tool {
     }
 
     public execute(x: number, y: number, sim: Simulator) {
-        sim.eraseParticles(x, y);
+        // I don't know why I put this here, it's handled in tooltip
+        // sim.eraseParticles(x, y);
+        // sim.eraseWalls(x,y);
     }
 
     public toString(): string {

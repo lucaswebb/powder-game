@@ -29,7 +29,8 @@ class ToolTip extends Tool {
             sim.addWalls(x, y);
         }
         if (ToolTip.getType() == ToolType.Eraser){
-            sim.eraseParticles(x, y)
+            sim.eraseParticles(x, y);
+            sim.eraseWalls(x, y);
         }
 
     }
