@@ -20,6 +20,24 @@
 
             let gameController = new GameController({x: WIDTH, y: HEIGHT}, canvas);
         })
+
+        function resetFunction(){
+            const WIDTH = 800, HEIGHT = 600;
+
+            console.log("titties");
+            let canvas = document.createElement("canvas");
+            let canvasContainer = document.getElementById("canvasContainer");
+            canvasContainer.children[0].remove();
+
+            canvas.width = WIDTH;
+            canvas.height = HEIGHT;
+            canvas.style.border = "1px solid black";
+            canvas.oncontextmenu = () => false;
+
+            canvasContainer.appendChild(canvas);
+
+            let gameController = new GameController({x: WIDTH, y: HEIGHT}, canvas);
+        }
     </script>
 </head>
 
@@ -38,6 +56,7 @@
     </div>
     <div class="gameControls">
         <button class="pause">Pause</button>
+        <button class="reset" onclick="resetFunction()">Reset</button>
     </div>
 
 

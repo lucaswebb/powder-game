@@ -24,37 +24,41 @@ class GameController {
         Placer.setType(ParticleType["Stone"]);
         this.toolIsSet = true;
         this.paused = false;
+
+        // scope is weird, setting function outside works, but is definitely janky
         let f = this.changeTool;
+        // set particle button event listener
         let particleList = document.getElementsByClassName("particle");
         for (let i = 0; i < particleList.length; i++){
             particleList[i].addEventListener("click", function() {
                 f("particle", particleList[i].innerHTML);
             });
-            // particleList[i].addEventListener("click",
-            //     this.changeTool.bind("particle", particleList[i].innerHTML)
-            // );
-        
         }
         
+        // set tool button event listener
         let toolList = document.getElementsByClassName("tool");
-
         for (let i = 0; i < toolList.length; i++){
-            
             toolList[i].addEventListener("click", function() {
                 f("tool", toolList[i].innerHTML);
             });
         }
 
+        // pause logic
         let pauseButton = document.getElementsByClassName("pause")[0];
-        let pauseFunction = this.pause;
-        pauseButton.addEventListener("click", function() {
-            pauseFunction();
-        })
-        
-        
-        
-        // gameMapiFrame.onclick = this.handleUserClick;
+        pauseButton.addEventListener("click", () => {
+            if (this.paused){
+                console.log("game unpause");
+                this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
+                this.paused = false;
+            }
+            else {
+                console.log("game pause");
+                clearInterval(this.tickInterval);
+                this.paused = true;
+            }
+        });
 
+        // mouse clicking logic (updating x and y, adding/erasing particles)
         canvas.addEventListener("mousedown", (event: MouseEvent) => {
             this.mouseEvent = event;
             this.isMouseDown = event.button === 0;
@@ -75,15 +79,11 @@ class GameController {
             });
             
             if (this.currentTool instanceof ToolTip){
-                // if(ToolTip.getType() == ToolType.Wall){
-                //     this.timer = setInterval(this.spawnParticles.bind(this), .0001);
-                // }
-                // if(ToolTip.getType() == ToolType.Eraser){
-                //     this.timer = setInterval(this.eraseParticles.bind(this), .002);
-                // }
+                // set refresh rate faster for walls and erasers
                 this.timer = setInterval(this.spawnParticles.bind(this), .005);
             }
             if (this.currentTool instanceof Placer){
+                // every 40ms for new particle
                 this.timer = setInterval(this.spawnParticles.bind(this), 40);
             }
                 
@@ -93,15 +93,9 @@ class GameController {
     }
 
     private spawnParticles(): void{
-        // console.log(this.currX, this.currY);
-        // console.log(this.currentTool);
-        // if(this.toolIsSet){
+        // call the tool to interact with particles/walls
         this.currentTool.execute(this.currX, this.size.y - this.currY, this.sim);
         
-    }
-
-    private eraseParticles(): void{
-        this.currentTool.execute(this.currX, this.size.y - this.currY, this.sim);
     }
 
     private tick(): void {
@@ -137,25 +131,6 @@ class GameController {
                 console.log("unknown tool");
         }
         
-    }
-
-
-    private reset(): void {
-
-    }
-
-    private pause(): void {
-
-        if (this.paused){
-            console.log("game unpause");
-            this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
-            this.paused = false;
-        }
-        else {
-            console.log("game pause");
-            clearInterval(this.tickInterval);
-            this.paused = true;
-        }
     }
 
 }

@@ -182,7 +182,6 @@ class Simulator implements Iterator<Particle> {
         var testCase = this.particles.filter(function (p) {
             return p.x == x && p.y == y
         });
-        console.log(testCase);
         if(testCase.length == 0){
             var toAdd = ParticleFactory.getNewParticle(x, y, type);
             this.particle_map[x][y] = toAdd;
@@ -191,7 +190,7 @@ class Simulator implements Iterator<Particle> {
     }
 
     public addWalls(x: number, y: number): void {
-        // erase 5x5 area
+        // adding walls in 5x5 area
         let sub_xvals = [x-2, x-1, x, x+1, x+2,
                         x-2, x-1, x, x+1, x+2,
                         x-2, x-1, x, x+1, x+2,
@@ -231,35 +230,19 @@ class Simulator implements Iterator<Particle> {
                         y-2, y-2, y-2, y-2, y-2];
 
         for(let i = 0; i < 25; i++){
-            
-            // if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
-            //     if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
-            //         console.log(this.walls.length);
-            //         this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
-            //         let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
-            //         const index = this.walls.indexOf(toErase, 0);
-            //         this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
-            //         this.walls[index].toErase = true;
-            //         console.log(this.walls.length);
-            //     }
-                
-            // }
+            // make sure particle is there
             if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
-                // this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
-                // console.log(this.particles.length);
                 let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
                 const index = this.particles.indexOf(toErase, 0);
                 this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
                 this.particles[index].toErase = true;
-                // console.log(this.particles.length);
             }
 
         }
     }
 
     public eraseWalls(x: number ,y: number): void {
-        // erase in 5x5 area, just like walls
-        console.log("What the fuck");
+        // erase in 5x5 area
         let sub_xvals = [x-2, x-1, x, x+1, x+2,
                         x-2, x-1, x, x+1, x+2,
                         x-2, x-1, x, x+1, x+2,
@@ -272,28 +255,15 @@ class Simulator implements Iterator<Particle> {
                         y-2, y-2, y-2, y-2, y-2];
 
         for(let i = 0; i < 25; i++){
-            // var testCase = this.walls.filter(function (w) {
-            //     return w.x === sub_xvals[i] && w.y === sub_yvals[i]
-            // });
-            // console.log(testCase);
-
-            // for (var wall of testCase){
-            //     let index = this.walls.indexOf(wall);
-            //     console.log(index);
-            //     this.walls[index].toErase = true;
-            //     this.wall_map[wall.x][wall.y] = null;
-
-            // }
-            
+            // make sure wall is there
             if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
+                // check that wall is erasable
                 if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
-                    console.log(this.walls.length);
-                    // this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
                     let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
                     const index = this.walls.indexOf(toErase, 0);
                     this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
+                    // some logic is breaking here
                     this.walls[index].toErase = true;
-                    console.log(this.walls.length);
                 }
                 
             }
