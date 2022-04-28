@@ -179,13 +179,97 @@ class Simulator implements Iterator<Particle> {
     }
 
     public addParticles(x: number, y: number, type: ParticleType): void {
-        var toAdd = ParticleFactory.getNewParticle(x, y, type);
-        this.particle_map[x][y] = toAdd;
-        this.particles.push(toAdd);
+        var testCase = this.particles.filter(function (p) {
+            return p.x == x && p.y == y
+        });
+        if(testCase.length == 0){
+            var toAdd = ParticleFactory.getNewParticle(x, y, type);
+            this.particle_map[x][y] = toAdd;
+            this.particles.push(toAdd);
+        }
     }
 
-    public eraseParticles(toEraseX: number[], toEraseY: number[]): void {
+    public addWalls(x: number, y: number): void {
+        // adding walls in 5x5 area
+        let sub_xvals = [x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2]
+        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
+                        y+1, y+1, y+1, y+1, y+1,
+                        y, y, y, y, y,
+                        y-1, y-1, y-1, y-1, y-1,
+                        y-2, y-2, y-2, y-2, y-2]
 
+        for(let i = 0; i < 9; i++){
+            var testCase = this.walls.filter(w => w.x == sub_xvals[i] && w.y == sub_yvals[i]);
+            if(testCase.length == 0){
+                var toAdd = new Wall(sub_xvals[i], sub_yvals[i], true);
+                this.wall_map[sub_xvals[i]][sub_yvals[i]] = toAdd;
+                this.walls.push(toAdd);
+            }
+        }
+
+        
+    }
+
+    
+
+    public eraseParticles(x: number ,y: number): void {
+        // erase in 5x5 area, just like walls
+        let sub_xvals = [x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2];
+        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
+                        y+1, y+1, y+1, y+1, y+1,
+                        y, y, y, y, y,
+                        y-1, y-1, y-1, y-1, y-1,
+                        y-2, y-2, y-2, y-2, y-2];
+
+        for(let i = 0; i < 25; i++){
+            // make sure particle is there
+            if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
+                let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
+                const index = this.particles.indexOf(toErase, 0);
+                this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
+                this.particles[index].toErase = true;
+            }
+
+        }
+    }
+
+    public eraseWalls(x: number ,y: number): void {
+        // erase in 5x5 area
+        let sub_xvals = [x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2,
+                        x-2, x-1, x, x+1, x+2];
+        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
+                        y+1, y+1, y+1, y+1, y+1,
+                        y, y, y, y, y,
+                        y-1, y-1, y-1, y-1, y-1,
+                        y-2, y-2, y-2, y-2, y-2];
+
+        for(let i = 0; i < 25; i++){
+            // make sure wall is there
+            if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
+                // check that wall is erasable
+                if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
+                    let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
+                    const index = this.walls.indexOf(toErase, 0);
+                    this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
+                    // some logic is breaking here
+                    this.walls[index].toErase = true;
+                }
+                
+            }
+            
+
+        }
     }
 
     hasNext(): boolean {

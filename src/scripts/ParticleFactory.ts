@@ -8,6 +8,8 @@ class ParticleFactory {
                 return new Stone(x, y);
             case ParticleType.Sand:
                 return new Sand(x, y);
+            case ParticleType.Water:
+                return new Water(x, y);
             default:
                 throw new TypeError("Unknown ParticleType " + type);
         }

@@ -10,6 +10,10 @@ abstract class Tool {
 
     }
 
+    public getType(){
+        
+    }
+
 
     public toString(): string{
         return "Tool";
