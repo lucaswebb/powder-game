@@ -1,42 +1,55 @@
-.main-container{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.title{
-    /* justify-content: center; */
-    /* text-shadow: 2px; */
-}
-
-.description{
-    margin-top: 10px;
-    font-size: 12px;
-}
-
-.main-box{
+body {
     display: flex;
     flex-direction: row;
-    align-items: center;
+    padding: 5%;
 }
 
 #canvasContainer {
-    display: flex;
-    justify-content: center;
+    align-self: center;
     width: 100%;
-    margin-top: 5px;
 }
 
-.tool-pallette{
+#side-container {
+    width: 100%;
+    flex-shrink: 2;
+}
+
+#gameControls {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    justify-content: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+#tool-box {
     display: flex;
     flex-direction: row;
     justify-content: center;
+    align-items: start;
+    column-gap: 50px;
 }
 
-.pixel-list{
-    
+#tools, #particles {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    row-gap: 10px;
+    flex-wrap: wrap;
 }
 
-h1{
+.active {
+    border: 3px solid black;
+}
+
+.description {
+    font-size: 12px;
+    text-align: center;
+}
+
+h1, h2 {
+    margin: 0;
+    margin-top: 10px;
     text-align: center;
 }

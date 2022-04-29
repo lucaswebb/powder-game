@@ -1,7 +1,7 @@
 // import { ParticleFactory } from "./ParticleFactory";
 // import { ParticleType } from "./ParticleType";
 
-class Simulator implements Iterator<Particle> {
+class Simulator {
     // Array of all particles
     public particles: Particle[];
 
@@ -286,17 +286,4 @@ class Simulator implements Iterator<Particle> {
 
         }
     }
-
-    hasNext(): boolean {
-        return false;
-    }
-
-    next(): Particle {
-        return undefined;
-    }
-
-    reset(): void {
-
-    }
-
 }

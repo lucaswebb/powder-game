@@ -25,37 +25,35 @@ class GameController {
         this.toolIsSet = true;
         this.paused = false;
 
-        // scope is weird, setting function outside works, but is definitely janky
-        let f = this.changeTool;
-        // set particle button event listener
-        let particleList = document.getElementsByClassName("particle");
-        for (let i = 0; i < particleList.length; i++){
-            particleList[i].addEventListener("click", function() {
-                f("particle", particleList[i].innerHTML);
-            });
-        }
-        
-        // set tool button event listener
-        let toolList = document.getElementsByClassName("tool");
-        for (let i = 0; i < toolList.length; i++){
-            toolList[i].addEventListener("click", function() {
-                f("tool", toolList[i].innerHTML);
-            });
-        }
+        document.getElementById("tool-box").addEventListener("click", (event) => {
+            var target = <HTMLElement> event.target;
+            console.log(target.parentElement.id);
+            if (target.parentElement.id == "particles") {
+                document.getElementsByClassName("active")[0].className = "inactive";
+                target.className = "active";
+                this.changeTool("particle", target.innerHTML);
+            } else if (target.parentElement.id == "tools") {
+                document.getElementsByClassName("active")[0].className = "inactive";
+                target.className = "active";
+                this.changeTool("tool", target.innerHTML);
+            }
+        });
 
-        // pause logic
-        let pauseButton = document.getElementsByClassName("pause")[0];
+
+        // Pause Button
+        let pauseButton = document.getElementsByClassName("pause_button")[0];
         pauseButton.addEventListener("click", () => {
             if (this.paused){
-                console.log("game unpause");
-                // this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
                 this.paused = false;
-            }
-            else {
-                console.log("game pause");
-                // clearInterval(this.tickInterval);
+                pauseButton.innerHTML = "Pause";
+            } else {
                 this.paused = true;
+                pauseButton.innerHTML = "Play";
             }
+        });
+
+        document.getElementsByClassName("reset_button")[0].addEventListener("click", () => {
+            this.reset();
         });
 
         // mouse clicking logic (updating x and y, adding/erasing particles)
@@ -113,8 +111,6 @@ class GameController {
         this.sim.walls = this.view.renderWalls(this.sim.walls);
     }
 
-    
-
     private changeTool = (tip: string, name: string) => {
         switch(tip){
             case "particle": 
@@ -130,7 +126,9 @@ class GameController {
             default:
                 console.log("unknown tool");
         }
-        
     }
 
+    private reset(): void {
+        this.sim = new Simulator(this.size);
+    }
 }
