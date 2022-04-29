@@ -25,10 +25,10 @@ class ToolTip extends Tool {
     }
 
     public execute(x: number, y: number, sim: Simulator) {
-        if (ToolTip.getType() == ToolType.Wall){
+        if (ToolTip.getType() == ToolType.Wall) {
             sim.addWalls(x, y);
         }
-        if (ToolTip.getType() == ToolType.Eraser){
+        if (ToolTip.getType() == ToolType.Eraser) {
             sim.eraseParticles(x, y);
             sim.eraseWalls(x, y);
         }
