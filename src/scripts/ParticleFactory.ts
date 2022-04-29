@@ -10,6 +10,10 @@ class ParticleFactory {
                 return new Sand(x, y);
             case ParticleType.Water:
                 return new Water(x, y);
+            case ParticleType.Dirt:
+                return new Dirt(x, y);
+            case ParticleType.Oil:
+                return new Oil(x, y);
             default:
                 throw new TypeError("Unknown ParticleType " + type);
         }

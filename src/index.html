@@ -23,8 +23,6 @@
 
         function resetFunction(){
             const WIDTH = 800, HEIGHT = 600;
-
-            console.log("titties");
             let canvas = document.createElement("canvas");
             let canvasContainer = document.getElementById("canvasContainer");
             canvasContainer.children[0].remove();
@@ -59,22 +57,25 @@
         <button class="reset" onclick="resetFunction()">Reset</button>
     </div>
 
-
-    <div id="canvasContainer"></div>
-    
-
-    <div id="tool-pallette">
-        <div id="particle-classes">
-            <h1>Powders</h1>
-            <button class="particle">Stone</button>
-            <button class="particle">Sand</button>
-            <button class="particle">Water</button>
-        </div>
+    <div class="main-box">
+        <div id="canvasContainer"></div>
         
-        <div id="tool-classes">
-            <h1>Tools</h1>
-            <button class="tool">Eraser</button>
-            <button class="tool">Wall</button>
+
+        <div id="tool-pallette" style="margin: inherit;padding: 20px;">
+            <div id="particle-classes">
+                <h1>Powders</h1>
+                <button class="particle">Stone</button>
+                <button class="particle">Sand</button>
+                <button class="particle">Water</button>
+                <button class="particle">Dirt</button>
+                <button class="particle">Oil</button>
+            </div>
+            
+            <div id="tool-classes">
+                <h1>Tools</h1>
+                <button class="tool">Eraser</button>
+                <button class="tool">Wall</button>
+            </div>
         </div>
     </div>
 </div>
