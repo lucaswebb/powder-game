@@ -34,7 +34,7 @@ class GameView {
         let retArr: Wall[] = walls.filter(w => w.toErase != true);
         for (let wall of retArr) {
             // if (!wall.toErase){
-            this.context.fillStyle = Color.Brick;
+            this.context.fillStyle = Color.DeepBlue;
             this.context.fillRect(wall.x, this.HEIGHT - wall.y, 3, 3);
             // }
             // else{

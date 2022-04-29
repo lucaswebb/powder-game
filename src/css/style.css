@@ -14,6 +14,12 @@
     font-size: 12px;
 }
 
+.main-box{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 #canvasContainer {
     display: flex;
     justify-content: center;
