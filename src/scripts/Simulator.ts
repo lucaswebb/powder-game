@@ -190,19 +190,23 @@ class Simulator implements Iterator<Particle> {
     }
 
     public addWalls(x: number, y: number): void {
-        // adding walls in 5x5 area
-        let sub_xvals = [x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2]
-        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
-                        y+1, y+1, y+1, y+1, y+1,
-                        y, y, y, y, y,
-                        y-1, y-1, y-1, y-1, y-1,
-                        y-2, y-2, y-2, y-2, y-2]
+        // adding walls in 7x7 area
+        let sub_xvals = [x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3,
+                        x-3, x-2, x-1, x, x+1, x+2, x+3]
+        let sub_yvals = [y+3, y+3, y+3, y+3, y+3, y+3, y+3,
+                        y+2, y+2, y+2, y+2, y+2, y+2, y+2,
+                        y+1, y+1, y+1, y+1, y+1, y+1, y+1,
+                        y, y, y, y, y, y, y,
+                        y-1, y-1, y-1, y-1, y-1, y-1, y-1,
+                        y-2, y-2, y-2, y-2, y-2, y-2, y-2,
+                        y-3, y-3, y-3, y-3, y-3, y-3, y-3]
 
-        for(let i = 0; i < 9; i++){
+        for(let i = 0; i < 49; i++){
             var testCase = this.walls.filter(w => w.x == sub_xvals[i] && w.y == sub_yvals[i]);
             if(testCase.length == 0){
                 var toAdd = new Wall(sub_xvals[i], sub_yvals[i], true);
