@@ -1,6 +1,3 @@
-// import { ParticleFactory } from "./ParticleFactory";
-// import { ParticleType } from "./ParticleType";
-
 class Simulator {
     // Array of all particles
     public particles: Particle[];
@@ -12,58 +9,77 @@ class Simulator {
     private wall_map: Wall[][];
     public walls: Wall[];
 
+    size: Vec2D;
 
-    constructor(size: Vec2D) {
+
+    constructor(canvasSize: Vec2D) {
         // instantiate empty particle and wall maps
-        this.particle_map = Array(size.y);
+        this.size = {x: Math.floor(canvasSize.x/PARTICLE_SIZE), y: Math.floor(canvasSize.y/PARTICLE_SIZE)};
+
+        this.particle_map = Array(this.size.y);
         this.particles = new Array();
-        this.wall_map = Array(size.y);
+        this.wall_map = Array(this.size.y);
         this.walls = new Array();
 
-        for (let x = 0; x < size.x; x++) {
-            this.particle_map[x] = Array(size.y);
-            this.wall_map[x] = Array(size.y);
-            for (let y = 0; y < size.y; y++) {
+        for (let x = 0; x < this.size.x; x++) {
+            this.particle_map[x] = Array(this.size.y);
+            this.wall_map[x] = Array(this.size.y);
+            for (let y = 0; y < this.size.y; y++) {
                 this.particle_map[x][y] = null;
                 this.wall_map[x][y] = null;
             }
         }
 
         // add non-erasable walls as boundaries
-        for (let x = 0; x < size.x; x++) {
+        for (let x = 0; x < this.size.x; x++) {
             let temp_wall = new Wall(x, 0, false);
             this.wall_map[x][0] = temp_wall;
             this.walls.push(temp_wall);
         }
 
-        for (let y = 0; y < size.y; y++) {
-            let temp_wall = new Wall(0, y, false);
-            this.wall_map[0][y] = temp_wall;
-            this.walls.push(temp_wall);
-            temp_wall = new Wall(size.x - 1, y, false);
-            this.wall_map[size.x - 1][y] = temp_wall;
-            this.walls.push(temp_wall);
-        }
-
-
-        // for (let i = 0; i < 100; i++) {
-        //     this.particles.push(ParticleFactory.getNewParticle(i, i, ParticleType.Stone));
+        // side walls
+        // for (let y = 0; y < this.size.y; y++) {
+        //     let temp_wall = new Wall(0, y, false);
+        //     this.wall_map[0][y] = temp_wall;
+        //     this.walls.push(temp_wall);
+        //     temp_wall = new Wall(this.size.x - 1, y, false);
+        //     this.wall_map[this.size.x - 1][y] = temp_wall;
+        //     this.walls.push(temp_wall);
         // }
+    }
 
-        // this.particles.push(ParticleFactory.getNewParticle(99, 99, ParticleType.Stone));
+    private inBounds(x: number, y: number): boolean {
+        if (x < 0 || x > this.size.x - 1 || y < 0){
+            return false;
+        }
+        return true;
     }
 
     // Used the following as a significant reference point
     // https://github.com/The-Powder-Toy/The-Powder-Toy
-
     public updateParticles(): void {
         for (var p of this.particles) {
             var x = p.x;
             var y = p.y;
 
             // updates to velocity from gravity
-            p.vy -= 0.5;
+            p.vy -= 0.2;
 
+            if (p.liquid &&  p.vx != 0) {
+                if (this.inBounds(x-1, y)){
+                    if (this.particle_map[x-1][y] == null) {
+                        p.vx = -0.6;
+                    } else if (this.particle_map[x-1][y].density < p.density) {
+                        p.vx = -0.6;
+                    } else if (this.inBounds(x+1, y)) {
+                        if (this.particle_map[x+1][y] == null) {
+                            p.vx = 1;
+                        } else if (this.particle_map[x+1][y].density < p.density) {
+                            p.vx = 1;
+                        }
+                    }
+                }
+            }
 
             // if the particle is not moving, skip, code because movement is next
             if (p.vx == 0 && p.vy == 0) {
@@ -121,7 +137,9 @@ class Simulator {
             // console.log(p.vy, fin_y);
 
             if(!this.doMove(p, fin_x, fin_y)) {
-                //p.vx = 0;
+                if (p.liquid){
+                    p.vx = 0.01;
+                }
                 p.vy *= 0.5;
             }
         }
@@ -131,12 +149,19 @@ class Simulator {
     // 1, can move to unoccupied space
     // 2, can move with swap
     private evalMove(p: Particle, new_x: number, new_y: number): number {
+        //check for out of bounds
+        if (!this.inBounds(new_x, new_y)) {
+            return 0;
+        }
+
         // check for other particles at new location
         if (this.particle_map[new_x][new_y] != null) {
             // now compare densities
             // TODO
-            // for now particles just bounce off each other
             // if p is denser than the particle at new_x, new_y, then swap locations
+            if (p.density > this.particle_map[new_x][new_y].density){
+                return 2;
+            }
             return 0;
         }
 
@@ -153,13 +178,23 @@ class Simulator {
             return true;
         }
         if (this.tryMove(p, new_x, new_y)) {
-            // only do this if we didn't swap!
-            // TODO
-            this.particle_map[p.x][p.y] = null;
-            p.x = new_x;
-            p.y = new_y;
-            this.particle_map[new_x][new_y] = p;
-            return true;
+            // swap
+            if (this.particle_map[new_x][new_y] != null) {
+                var toSwap = this.particle_map[new_x][new_y];
+                toSwap.x = p.x;
+                toSwap.y = p.y;
+                this.particle_map[p.x][p.y] = toSwap;
+                p.x = new_x;
+                p.y = new_y;
+                this.particle_map[new_x][new_y] = p;
+            } else {
+                // only do this if we didn't swap!
+                this.particle_map[p.x][p.y] = null;
+                p.x = new_x;
+                p.y = new_y;
+                this.particle_map[new_x][new_y] = p;
+                return true;
+            }
         }
         return false;
     }
@@ -173,12 +208,14 @@ class Simulator {
             return true;
         }
         // TODO
-        // if (e == 2){
-        //
-        // }
+        if (e == 2){
+            return true;
+        }
     }
 
     public addParticles(x: number, y: number, type: ParticleType): void {
+        x = Math.floor(x/PARTICLE_SIZE);
+        y = Math.floor(y/PARTICLE_SIZE);
         var testCase = this.particles.filter(function (p) {
             return p.x == x && p.y == y
         });
@@ -189,101 +226,36 @@ class Simulator {
         }
     }
 
-    public addWalls(x: number, y: number): void {
-        // adding walls in 5x5 area
-        let sub_xvals = [x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2]
-        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
-                        y+1, y+1, y+1, y+1, y+1,
-                        y, y, y, y, y,
-                        y-1, y-1, y-1, y-1, y-1,
-                        y-2, y-2, y-2, y-2, y-2]
+    public addWalls(toAddPoints: Array<Vec2D>): void {
+        for (var w of toAddPoints) {
+            var x = Math.floor(w.x/PARTICLE_SIZE);
+            var y = Math.floor(w.y/PARTICLE_SIZE);
 
-        for(let i = 0; i < 9; i++){
-            var testCase = this.walls.filter(w => w.x == sub_xvals[i] && w.y == sub_yvals[i]);
-            if(testCase.length == 0){
-                var toAdd = new Wall(sub_xvals[i], sub_yvals[i], true);
-                this.wall_map[sub_xvals[i]][sub_yvals[i]] = toAdd;
-                this.walls.push(toAdd);
+            if (this.particle_map[x][y] == null && this.wall_map[x][y] == null) {
+                let temp_wall = new Wall(x, y, true);
+                this.wall_map[x][y] = temp_wall;
+                this.walls.push(temp_wall);
             }
-        }
-
-        
-    }
-
-    
-
-    public eraseParticles(x: number ,y: number): void {
-        // erase in 5x5 area, just like walls
-        let sub_xvals = [x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2];
-        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
-                        y+1, y+1, y+1, y+1, y+1,
-                        y, y, y, y, y,
-                        y-1, y-1, y-1, y-1, y-1,
-                        y-2, y-2, y-2, y-2, y-2];
-
-        for(let i = 0; i < 25; i++){
-            // make sure particle is there
-            // if(this.particle_map[sub_xvals[i]][sub_yvals[i]] != null){
-            //     let toErase = this.particle_map[sub_xvals[i]][sub_yvals[i]];
-            //     const index = this.particles.indexOf(toErase, 0);
-            //     this.particle_map[sub_xvals[i]][sub_yvals[i]] = null;
-            //     this.particles[index].toErase = true;
-            // }
-
-            let removeArray = this.particles.filter(p => p.x == sub_xvals[i] && p.y == sub_yvals[i]);
-
-            for (var p of removeArray){
-                const index = this.particles.indexOf(p);
-                this.particle_map[p.x][p.y] = null;
-                this.particles[index].toErase = true;
-            }
-
         }
     }
 
-    public eraseWalls(x: number ,y: number): void {
-        // erase in 5x5 area
-        let sub_xvals = [x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2,
-                        x-2, x-1, x, x+1, x+2];
-        let sub_yvals = [y+2, y+2, y+2, y+2, y+2,
-                        y+1, y+1, y+1, y+1, y+1,
-                        y, y, y, y, y,
-                        y-1, y-1, y-1, y-1, y-1,
-                        y-2, y-2, y-2, y-2, y-2];
+    public eraseArea(toErasePoints: Array<Vec2D>): void {
+        for (var p of toErasePoints) {
+            var x = Math.floor(p.x/PARTICLE_SIZE);
+            var y = Math.floor(p.y/PARTICLE_SIZE);
 
-        for(let i = 0; i < 25; i++){
-            // make sure wall is there
-            // if(this.wall_map[sub_xvals[i]][sub_yvals[i]] != null){
-            //     // check that wall is erasable
-            //     if(this.wall_map[sub_xvals[i]][sub_yvals[i]].erasable){
-            //         let toErase = this.wall_map[sub_xvals[i]][sub_yvals[i]];
-            //         const index = this.walls.indexOf(toErase, 0);
-            //         this.wall_map[sub_xvals[i]][sub_yvals[i]] = null;
-            //         // some logic is breaking here
-            //         this.walls[index].toErase = true;
-            //     }
-                
-            // }
-            let removeArray = this.walls.filter(w => w.x == sub_xvals[i] && w.y == sub_yvals[i]);
+            var part = this.particle_map[x][y];
+            var wall = this.wall_map[x][y];
 
-            for (var w of removeArray){
-                const index = this.walls.indexOf(w);
-                this.wall_map[w.x][w.y] = null;
-                this.walls[index].toErase = true;
+            if (part != null) {
+                this.particles = this.particles.filter(item => item !== part);
+                this.particle_map[x][y] = null;
             }
-            
 
+            if (wall != null && wall.erasable) {
+                this.walls = this.walls.filter(item => item !== wall);
+                this.wall_map[x][y] = null;
+            }
         }
     }
 }

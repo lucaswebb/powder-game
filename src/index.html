@@ -6,7 +6,8 @@
     <script src="../build/app.js"></script>
     <script>
         window.addEventListener("DOMContentLoaded", () => {
-            const WIDTH = 800, HEIGHT = 600;
+            // ideally divisible by particle size
+            const WIDTH = 801, HEIGHT = 600;
 
             let canvas = document.createElement("canvas");
             let canvasContainer = document.getElementById("canvasContainer");
@@ -37,6 +38,16 @@
             <button class="reset_button">Reset</button>
         </div>
 
+        <div id="slider">
+            <label for="size_slider">Pixel Size</label>
+            <input type="range" id="size_slider" name="pixel size" min="1" max="15" step="1" value="5" oninput="this.nextElementSibling.value = this.value"></input>
+            <output>5</output>
+        </div>
+
+        <div class="description">
+            <p>Changing the pixel size will reset the map</p>
+        </div>
+
         <div id="tool-box">
             <div id="tools">
                 <h1>Tools</h1>
@@ -49,7 +60,6 @@
                 <button class="active">Stone</button>
                 <button class="inactive">Sand</button>
                 <button class="inactive">Water</button>
-                <button class="inactive">Dirt</button>
                 <button class="inactive">Oil</button>
             </div>
         </div>

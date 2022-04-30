@@ -1,4 +1,5 @@
-const FPS = 24;
+const FPS = 60;
+let PARTICLE_SIZE = 5; // How many pixels per side of each particle, should be odd
 
 class GameController {
     size: Vec2D;
@@ -7,38 +8,39 @@ class GameController {
     view: GameView;
     currentTool: Tool;
     tickInterval: number;
-    currX: number;
-    currY: number;
-    toolIsSet: boolean;
-    currentParticle: Particle;
 
     private mouseEvent: MouseEvent;
     private isMouseDown: boolean = false;
-    private timer;
 
     constructor(size: Vec2D, canvas: HTMLCanvasElement) {
         this.size = size;
         this.view = new GameView(size, canvas);
         this.sim = new Simulator(size);
         this.currentTool = Placer.getInstance();
-        Placer.setType(ParticleType["Stone"]);
-        this.toolIsSet = true;
         this.paused = false;
 
+        // Tool changing
         document.getElementById("tool-box").addEventListener("click", (event) => {
             var target = <HTMLElement> event.target;
-            console.log(target.parentElement.id);
-            if (target.parentElement.id == "particles") {
+            if (target.parentElement.id == "particles" || target.parentElement.id == "tools") {
                 document.getElementsByClassName("active")[0].className = "inactive";
                 target.className = "active";
-                this.changeTool("particle", target.innerHTML);
-            } else if (target.parentElement.id == "tools") {
-                document.getElementsByClassName("active")[0].className = "inactive";
-                target.className = "active";
-                this.changeTool("tool", target.innerHTML);
+                if (target.parentElement.id == "particles") {
+                    this.currentTool = Placer.getInstance();
+                    (<Placer>this.currentTool).setType(ParticleType[target.innerHTML]);
+                } else if (target.parentElement.id == "tools") {
+                    var name = target.innerHTML;
+                    this.currentTool = window[name.concat("Tool")].getInstance();
+                }
             }
         });
 
+        // Slider
+        var slider = document.getElementById("size_slider");
+        slider.addEventListener("input", () => {
+            PARTICLE_SIZE = (<HTMLInputElement> slider).valueAsNumber;
+            this.reset();
+        });
 
         // Pause Button
         let pauseButton = document.getElementsByClassName("pause_button")[0];
@@ -52,80 +54,45 @@ class GameController {
             }
         });
 
+        // Reset Button
         document.getElementsByClassName("reset_button")[0].addEventListener("click", () => {
             this.reset();
         });
 
-        // mouse clicking logic (updating x and y, adding/erasing particles)
+        // Mouse listeners
         canvas.addEventListener("mousedown", (event: MouseEvent) => {
             this.mouseEvent = event;
             this.isMouseDown = event.button === 0;
-            this.currX = event.offsetX;
-            this.currY = event.offsetY;
-    
-            canvas.addEventListener("mousemove", (event: MouseEvent) => {
-                this.mouseEvent = event;
-                this.currX = event.offsetX;
-                this.currY = event.offsetY;
-                
-                // this.timer = setInterval(this.spawnParticles.bind(this), 500);
-            });
-            document.addEventListener("mouseup", () => {
-                this.isMouseDown = false;
-
-                clearInterval(this.timer)
-            });
-            
-            if (this.currentTool instanceof ToolTip){
-                // set refresh rate faster for walls and erasers
-                this.timer = setInterval(this.spawnParticles.bind(this), .005);
-            }
-            if (this.currentTool instanceof Placer){
-                // every 40ms for new particle
-                this.timer = setInterval(this.spawnParticles.bind(this), 40);
-            }
-                
         });
+
+        document.addEventListener("mouseup", () => {
+            this.isMouseDown = false;
+        });
+
+        canvas.addEventListener("mousemove", (event: MouseEvent) => {
+            this.mouseEvent = event;
+        });
+
         // save this interval ID for pausing
         this.tickInterval = setInterval(this.tick.bind(this), 1000/FPS);
     }
 
-    private spawnParticles(): void{
-        // call the tool to interact with particles/walls
-        this.currentTool.execute(this.currX, this.size.y - this.currY, this.sim);
-        
-    }
-
+    // Main game loop
     private tick(): void {
-        // main game loop
+
         // check if mouse is currently being clicked and handle that
+        if (this.isMouseDown) {
+            this.currentTool.execute(Math.floor(this.mouseEvent.offsetX), this.size.y - Math.floor(this.mouseEvent.offsetY), this.sim)
+        }
 
         // if game is not paused, update the current pixel array using Simulator
         if (!this.paused) {
             this.sim.updateParticles();
         }
-        
 
         // pass the current pixel array to GameView to be rendered every tick
-        this.sim.particles = this.view.renderParticles(this.sim.particles);
-        this.sim.walls = this.view.renderWalls(this.sim.walls);
-    }
-
-    private changeTool = (tip: string, name: string) => {
-        switch(tip){
-            case "particle": 
-                let newPlacer = Placer.getInstance();
-                Placer.setType(ParticleType[name]);
-                this.currentTool = newPlacer;
-                break;
-            case "tool": 
-                let newTool = ToolTip.getInstance();
-                ToolTip.setType(ToolType[name]);
-                this.currentTool = newTool;
-                break;
-            default:
-                console.log("unknown tool");
-        }
+        this.view.renderParticles(this.sim.particles);
+        this.view.renderWalls(this.sim.walls);
     }
 
     private reset(): void {

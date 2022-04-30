@@ -2,21 +2,8 @@
 
 abstract class Tool {
 
-    protected constructor() {
+    public execute(x: number, y: number, sim: Simulator): void {}
 
-    }
-
-    public execute(x: number, y: number, sim: Simulator): void {
-
-    }
-
-    public getType(){
-        
-    }
-
-
-    public toString(): string{
-        return "Tool";
-    }
+    public static getInstance(): Tool { return null}
 
 }

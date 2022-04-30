@@ -9,40 +9,19 @@ class GameView {
         this.HEIGHT = size.y;
     }
 
-    public renderParticles(particles: Particle[]): Particle[] {
+    public renderParticles(particles: Particle[]): void {
         this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
-        let retArr: Particle[] = particles.filter(p => p.toErase != true);
-        for (let particle of retArr) {
-            // if (!particle.toErase){
+        for (let particle of particles) {
             this.context.fillStyle = particle.color;
-            this.context.fillRect(particle.x, this.HEIGHT - particle.y, 2, 2);
-            // }
-            // else{
-            //     console.log("at least it's in here")
-            //     this.context.fillStyle = "white";
-            //     this.context.clearRect(particle.x, this.HEIGHT - particle.y, 3, 3);
-                
-            // }
+            this.context.fillRect(particle.x * PARTICLE_SIZE + 1, this.HEIGHT - (particle.y * PARTICLE_SIZE + 1), PARTICLE_SIZE, PARTICLE_SIZE);
         }
-        return retArr;
-
-        
     }
 
-    public renderWalls(walls: Wall[]): Wall[] {
+    public renderWalls(walls: Wall[]): void {
         // this.context.clearRect(0, 0, this.WIDTH, this.HEIGHT);
-        let retArr: Wall[] = walls.filter(w => w.toErase != true);
-        for (let wall of retArr) {
-            // if (!wall.toErase){
+        for (let wall of walls) {
             this.context.fillStyle = Color.DeepBlue;
-            this.context.fillRect(wall.x, this.HEIGHT - wall.y, 3, 3);
-            // }
-            // else{
-            //     console.log("at least it's in here")
-            //     this.context.fillStyle = "white";
-            //     this.context.clearRect(wall.x, this.HEIGHT - wall.y, 3, 3);
-            // }
+            this.context.fillRect(wall.x * PARTICLE_SIZE + 1, this.HEIGHT - (wall.y * PARTICLE_SIZE + 1), PARTICLE_SIZE, PARTICLE_SIZE);
         }
-        return retArr;
     }
 }

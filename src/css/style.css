@@ -23,6 +23,13 @@ body {
     margin-bottom: 20px;
 }
 
+#slider {
+    display: flex;
+    flex-direction: row;
+    column-gap: 10px;
+    justify-content: center;
+}
+
 #tool-box {
     display: flex;
     flex-direction: row;
