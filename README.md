@@ -1,5 +1,5 @@
 # Powder Game
-A live demo is available at [lucaswebb.github.io](<lucaswebb.github.io>) (Chrome recommended)
+A live demo is available at [lucaswebb.github.io](<https://lucaswebb.github.io>) (Chrome recommended)
 
 ## Team Members
 Lucas Webb and William Mardick-Kanter
