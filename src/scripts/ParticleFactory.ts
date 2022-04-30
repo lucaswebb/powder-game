@@ -1,6 +1,5 @@
-// import { ParticleType } from "./ParticleType";
-// import { Stone } from "./Stone";
 
+// Factory Pattern
 class ParticleFactory {
     public static getNewParticle(x: number, y: number, type: ParticleType): Particle {
         switch (type) {

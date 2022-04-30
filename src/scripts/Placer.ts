@@ -1,10 +1,6 @@
 ///<reference path="./Tool.ts" />
-// import { ParticleType } from "./ParticleType";
-// import { Simulator } from "./Simulator";
-// import { Tool } from "./Tool";
 
-
-
+// Singleton Pattern
 class Placer extends Tool {
     private static instance: Placer = new Placer();
     private type: ParticleType;
@@ -22,6 +18,7 @@ class Placer extends Tool {
         this.type = type;
     }
 
+    // Command Pattern
     public execute(x: number, y: number, sim: Simulator): void {
         // console.log(Placer.type);
         sim.addParticles(x, y, this.type);

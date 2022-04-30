@@ -1,3 +1,5 @@
+
+// Singleton Pattern
 class WallTool extends Tool {
     private static instance: WallTool;
 
@@ -13,6 +15,7 @@ class WallTool extends Tool {
         return WallTool.instance;
     }
 
+    // Command Pattern
     public execute(x: number, y: number, sim: Simulator) {
         var toAdd = [];
         for (let i = -2; i < 3; i++) {

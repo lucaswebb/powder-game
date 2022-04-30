@@ -1,3 +1,5 @@
+
+// MVC View Class
 class GameView {
     private context: CanvasRenderingContext2D;
     private WIDTH: number;

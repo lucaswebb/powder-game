@@ -1,6 +1,7 @@
 const FPS = 60;
 let PARTICLE_SIZE = 5; // How many pixels per side of each particle, should be odd
 
+// MVC Controller Class
 class GameController {
     size: Vec2D;
     paused: boolean;
@@ -82,6 +83,7 @@ class GameController {
 
         // check if mouse is currently being clicked and handle that
         if (this.isMouseDown) {
+            // Command Pattern
             this.currentTool.execute(Math.floor(this.mouseEvent.offsetX), this.size.y - Math.floor(this.mouseEvent.offsetY), this.sim)
         }
 

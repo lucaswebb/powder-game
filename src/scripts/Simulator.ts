@@ -1,3 +1,5 @@
+
+// MVC Model Class
 class Simulator {
     // Array of all particles
     public particles: Particle[];
@@ -10,7 +12,6 @@ class Simulator {
     public walls: Wall[];
 
     size: Vec2D;
-
 
     constructor(canvasSize: Vec2D) {
         // instantiate empty particle and wall maps
@@ -213,6 +214,7 @@ class Simulator {
         }
     }
 
+    // Command Pattern
     public addParticles(x: number, y: number, type: ParticleType): void {
         x = Math.floor(x/PARTICLE_SIZE);
         y = Math.floor(y/PARTICLE_SIZE);
@@ -226,6 +228,7 @@ class Simulator {
         }
     }
 
+    // Command Pattern
     public addWalls(toAddPoints: Array<Vec2D>): void {
         for (var w of toAddPoints) {
             var x = Math.floor(w.x/PARTICLE_SIZE);
@@ -239,6 +242,7 @@ class Simulator {
         }
     }
 
+    // Command Pattern
     public eraseArea(toErasePoints: Array<Vec2D>): void {
         for (var p of toErasePoints) {
             var x = Math.floor(p.x/PARTICLE_SIZE);

@@ -503,28 +503,6 @@ var Water = /** @class */ (function (_super) {
     }
     return Water;
 }(Particle));
-var WallTool = /** @class */ (function (_super) {
-    __extends(WallTool, _super);
-    function WallTool() {
-        return _super.call(this) || this;
-    }
-    WallTool.getInstance = function () {
-        if (!WallTool.instance) {
-            WallTool.instance = new WallTool();
-        }
-        return WallTool.instance;
-    };
-    WallTool.prototype.execute = function (x, y, sim) {
-        var toAdd = [];
-        for (var i = -2; i < 3; i++) {
-            for (var j = -2; j < 3; j++) {
-                toAdd.push({ x: x + i, y: y + j });
-            }
-        }
-        sim.addWalls(toAdd);
-    };
-    return WallTool;
-}(Tool));
 ///<reference path="./Tool.ts" />
 var EraserTool = /** @class */ (function (_super) {
     __extends(EraserTool, _super);
@@ -547,5 +525,27 @@ var EraserTool = /** @class */ (function (_super) {
         sim.eraseArea(toErase);
     };
     return EraserTool;
+}(Tool));
+var WallTool = /** @class */ (function (_super) {
+    __extends(WallTool, _super);
+    function WallTool() {
+        return _super.call(this) || this;
+    }
+    WallTool.getInstance = function () {
+        if (!WallTool.instance) {
+            WallTool.instance = new WallTool();
+        }
+        return WallTool.instance;
+    };
+    WallTool.prototype.execute = function (x, y, sim) {
+        var toAdd = [];
+        for (var i = -2; i < 3; i++) {
+            for (var j = -2; j < 3; j++) {
+                toAdd.push({ x: x + i, y: y + j });
+            }
+        }
+        sim.addWalls(toAdd);
+    };
+    return WallTool;
 }(Tool));
 //# sourceMappingURL=app.js.map

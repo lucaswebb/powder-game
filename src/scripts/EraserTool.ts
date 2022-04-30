@@ -1,5 +1,6 @@
 ///<reference path="./Tool.ts" />
 
+// Singleton Pattern
 class EraserTool extends Tool {
     private static instance: EraserTool;
 
@@ -15,6 +16,7 @@ class EraserTool extends Tool {
         return EraserTool.instance;
     }
 
+    // Command Pattern
     public execute(x: number, y: number, sim: Simulator) {
         var toErase = [];
         for (let i = -4; i < 5; i++) {

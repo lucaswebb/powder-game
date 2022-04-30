@@ -5,8 +5,4 @@ class Stone extends Particle {
         super(x, y);
         this.color = Color.Gray;
     }
-
-    public toString(): string {
-        return "Stone";
-    }
 }

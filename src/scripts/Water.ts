@@ -7,5 +7,4 @@ class Water extends Particle {
         this.liquid = true;
         this.density = 1;
     }
-
 }
