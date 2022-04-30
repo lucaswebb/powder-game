@@ -1,8 +1,12 @@
 # Powder Game
+A live demo is available at [lucaswebb.github.io](<lucaswebb.github.io>) (Chrome recommended)
 
-This is our semester project for CSCI 4448 - Object Oriented Analysis and Design
-at CU Boulder. To play the game, you can visit lucaswebb.github.io and play in
-your browser (Firefox may give issues, we recommend Chrome), or you can download
-and build using our build file.
+## Team Members
+Lucas Webb and William Mardick-Kanter
 
-Project Video [here](<https://youtu.be/85spOkpEdMA>)
+## Language Version
+TypeScript 4.5.4
+
+## Project Video
+
+YouTube link [here](<https://youtu.be/85spOkpEdMA>)
